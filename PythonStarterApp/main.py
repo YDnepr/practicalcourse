@@ -22,7 +22,7 @@ def selectRoute():
 def testerRoute1():
     fileName = 'viz2.html'
     dateRange = database.getDateRange()
-    initData = database.getTripsHistogramByStation(dateRange[0], dateRange[1], None, None, 15)
+    initData = database.getTripsHistogramByStation(dateRange[0], dateRange[1], None, None, 15, 'All', 'All', 0)
     stations = database.getAllStationNames()
     
     result = gui.plotHistogram(fileName, initData, stations, dateRange)
@@ -71,8 +71,10 @@ def histogram():
     ed = datetime.datetime.fromtimestamp(int(ed)/1000).date() 
     bs = int(request.args.get('bs'))
     g = request.args.get('g')
+    ut = request.args.get('ut')
+    age = int(request.args.get('age'))
     
-    initData = database.getTripsHistogramByStation(sd, ed, ss, es, bs,g)
+    initData = database.getTripsHistogramByStation(sd, ed, ss, es, bs, g, ut, age)
     json = jsonify(x = [d.isoformat() for d in initData['bins']], y = initData['values'])
     print initData
     
