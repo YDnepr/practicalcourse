@@ -1,0 +1,5 @@
+ibm_db == 2.0.7
+flask 
+Bokeh == 0.11.1
+folium
+BeautifulSoup
