@@ -61,7 +61,7 @@ def plotHistogram(fileName, initData, stations, dateRange, bokehPlaceholderId='b
     
     selectUT = Select(title="User Type:", value="All", options=["All", "Subscriber", "Customer"])
     selectGender = Select(title="Gender:", value="All", options=["All", "Male", "Female"])
-    sliderAge = Slider(start=8, end=100, value=30, step=5, title="Age")    
+    sliderAge = Slider(start=8, end=100, value=30, step=1, title="Age")    
     
     startDP = DatePicker(title="Start Date:", min_date=dateRange[0] ,max_date=dateRange[1], value=dateRange[0])
     endDP = DatePicker(title="End Date:", min_date=dateRange[0] ,max_date=dateRange[1], value=dateRange[1])
@@ -92,6 +92,17 @@ def plotHistogram(fileName, initData, stations, dateRange, bokehPlaceholderId='b
                 endDate = endDate.getTime();            
             
             var binSize = binSize.get('value');
+            
+            var gender
+            if (selectGender.get('value')=='Male')
+                gender = '1';
+            else if (selectGender.get('value')=='Female')
+                gender = '2';
+            else if (selectGender.get('value')=='All')
+                gender='All'
+            var userType = selectUT.get('value');
+            var age = sliderAge.get('value');
+
             //alert(startStation + " " + endStation + " " + startDate + " " + endDate + " " + binSize);
             var xmlhttp;
             xmlhttp = new XMLHttpRequest();
@@ -119,7 +130,7 @@ def plotHistogram(fileName, initData, stations, dateRange, bokehPlaceholderId='b
                     }
                 }
             };
-        var params = {ss:startStation, es:endStation, sd:startDate, ed:endDate, bs: binSize};
+        var params = {ss:startStation, es:endStation, sd:startDate, ed:endDate, bs: binSize, g:gender, ut:userType, age:age};
         url = "/histogram?" + jQuery.param( params );
         xmlhttp.open("GET", url, true);
         xmlhttp.send();
