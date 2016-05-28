@@ -118,20 +118,29 @@ def getNumberOfTripsOfDOW(dow, ut):
     
     return {'x':x, 'y':y}
     
-def getTripsByDate (StartDate,EndDate,StartStationId,EndStationID):
+def getTripsByDate (StartDate,EndDate,StartStationId,EndStationID,gender,userType,age):
     
     StartDate = "'" + StartDate.isoformat() + "'"
     EndDate = "'" + EndDate.isoformat() +  "'"
     rules = ''
+    Gender=''
+    UserType=''
+    Age=''
     
     if StartStationId is not None:
         rules += ' and start_station_id='+str(StartStationId)
     if EndStationID is not None:
-        rules += ' and end_station_id= '+str(EndStationID)
+        rules += ' and end_station_id='+str(EndStationID)
+    if gender !='All':
+        Gender = " and gender="+gender
+    if userType !='All':
+        UserType = " and usertype="+"'"+userType+"'"
+    if age !=0:
+        Age = 'and (birth year)='+str(2016-age)
         
-    select = "select DATE(TRIPS.STARTTIME), count(*) from TRIPS where DATE(TRIPS.STARTTIME) >= %s and DATE(TRIPS.STARTTIME) < %s  %s  "\
-    " group by DATE(TRIPS.STARTTIME) order by DATE(TRIPS.STARTTIME) asc"%(StartDate,EndDate,rules)
-    
+    select = "select DATE(TRIPS.STARTTIME), count(*) from TRIPS where DATE(TRIPS.STARTTIME) >= %s and DATE(TRIPS.STARTTIME) < %s %s %s %s %s"\
+    " group by DATE(TRIPS.STARTTIME) order by DATE(TRIPS.STARTTIME) asc"%(StartDate,EndDate,rules,Gender,UserType,Age)
+    print select
     rows = executeSelect(select) 
     
     return rows
@@ -162,7 +171,7 @@ def splitDateRangeByDays(startDateInclusive, endDateExclusinve, numDays):
         
     return ranges
         
-def getTripsHistogramByStation(startDate, endDate, startStationId, endStationId,  binSize):
+def getTripsHistogramByStation(startDate, endDate, startStationId, endStationId, binSize, gender, userType, age):
     delta = endDate - startDate
     numBins = delta.days / binSize
     
@@ -171,7 +180,7 @@ def getTripsHistogramByStation(startDate, endDate, startStationId, endStationId,
         
     bins = [0]*numBins
     
-    data = getTripsByDate( startDate, endDate, startStationId, endStationId)
+    data = getTripsByDate( startDate, endDate, startStationId, endStationId, gender, userType, age)
     
     for trip in data:
         tripDate = trip[0]
